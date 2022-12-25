@@ -15,3 +15,24 @@ db.serialize(() => {
         `INSERT INTO Artist (id, name, date_of_birth, biography, is_currently_employed) VALUES (1, 'test_name', 'test_date', 'test_bio', 1);`
     );
 });
+
+db.serialize(() => {
+    db.run('DROP TABLE IF EXISTS Series');
+    db.run(`CREATE TABLE IF NOT EXISTS Series (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL
+    );`);
+});
+
+db.serialize(() => {
+    db.run('DROP TABLE IF EXISTS Issue');
+    db.run(`CREATE TABLE IF NOT EXISTS Issue (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        issue_number INTEGER NOT NULL,
+        publication_date TEXT NOT NULL,
+        artist_id INTEGER NOT NULL,
+        series_id INTEGER NOT NULL
+    );`);
+});
