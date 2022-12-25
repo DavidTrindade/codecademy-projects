@@ -11,4 +11,7 @@ db.serialize(() => {
         biography TEXT NOT NULL,
         is_currently_employed INTEGER NOT NULL DEFAULT 1
     );`);
+    db.run(
+        `INSERT INTO Artist (id, name, date_of_birth, biography, is_currently_employed) VALUES (1, 'test_name', 'test_date', 'test_bio', 1);`
+    );
 });
