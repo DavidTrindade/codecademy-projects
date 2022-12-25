@@ -2,6 +2,7 @@ const express = require('express');
 const sqlite3 = require('sqlite3');
 
 const artistRouter = express.Router();
+
 const db = new sqlite3.Database(
     process.env.TEST_DATABASE || './database.sqlite'
 );
@@ -10,9 +11,7 @@ artistRouter.get('/', (req, res, next) => {
     db.all(
         'SELECT * FROM Artist WHERE is_currently_employed = 1',
         (err, artists) => {
-            if (err) {
-                return next(err);
-            }
+            if (err) return next(err);
             res.json({ artists });
         }
     );

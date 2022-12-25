@@ -2,15 +2,18 @@ const express = require('express');
 const sqlite3 = require('sqlite3');
 
 const seriesRouter = express.Router();
+
 const db = new sqlite3.Database(
     process.env.TEST_DATABASE || './database.sqlite'
 );
 
+const issuesRouter = require('./issues');
+
+seriesRouter.use('/:seriesId/issues', issuesRouter);
+
 seriesRouter.get('/', (req, res, next) => {
     db.all('SELECT * FROM Series', (err, series) => {
-        if (err) {
-            return next(err);
-        }
+        if (err) return next(err);
         res.json({ series });
     });
 });
@@ -83,6 +86,31 @@ seriesRouter.put('/:seriesId', (req, res, next) => {
                 (err, series) => {
                     if (err) return next(err);
                     res.json({ series });
+                }
+            );
+        }
+    );
+});
+
+seriesRouter.delete('/:seriesId', (req, res, next) => {
+    db.get(
+        'SELECT * FROM Issue WHERE series_id = $seriesId',
+        {
+            $seriesId: req.params.seriesId,
+        },
+        (err, issue) => {
+            if (err) return next(err);
+            if (issue) return res.sendStatus(400);
+
+            db.run(
+                'DELETE FROM Series WHERE id = $seriesId',
+                {
+                    $seriesId: req.params.seriesId,
+                },
+                err => {
+                    if (err) return next(err);
+
+                    res.sendStatus(204);
                 }
             );
         }
