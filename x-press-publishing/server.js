@@ -13,6 +13,10 @@ app.use(errorhandler());
 app.use(cors());
 app.use(morgan('dev'));
 
+const apiRouter = require('./api/api');
+
+app.use('/api', apiRouter);
+
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
