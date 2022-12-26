@@ -56,9 +56,7 @@ timesheetsRouter.param('timesheetId', (req, res, next, id) => {
         (err, timesheet) => {
             if (err) return next(err);
 
-            if (timesheet) {
-                return next();
-            }
+            if (timesheet) return next();
 
             res.sendStatus(404);
         }

@@ -7,6 +7,10 @@ const db = new sqlite3.Database(
 
 const menusRouter = express.Router();
 
+const menuItemsRouter = require('./menuItems');
+
+menusRouter.use('/:menuId/menu-items', menuItemsRouter);
+
 menusRouter.get('/', (req, res, next) => {
     db.all('SELECT * FROM Menu', (err, menus) => {
         if (err) return next(err);
