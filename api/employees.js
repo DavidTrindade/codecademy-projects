@@ -1,12 +1,14 @@
 const express = require('express');
 const sqlite3 = require('sqlite3');
-const { response } = require('../server');
-
-const employeesRouter = express.Router();
+const timesheetsRouter = require('./timesheets');
 
 const db = new sqlite3.Database(
     process.env.TEST_DATABASE || './database.sqlite'
 );
+
+const employeesRouter = express.Router();
+
+employeesRouter.use('/:employeeId/timesheets', timesheetsRouter);
 
 employeesRouter.get('/', (req, res, next) => {
     db.all(
@@ -23,7 +25,7 @@ employeesRouter.post('/', (req, res, next) => {
     const isCurrentEmployee = req.body.employee.isCurrentEmployee === 0 ? 0 : 1;
 
     if (!name || !position || !wage) {
-        res.sendStatus(400);
+        return res.sendStatus(400);
     }
 
     db.run(
@@ -71,10 +73,9 @@ employeesRouter.get('/:employeeId', (req, res, next) => {
 
 employeesRouter.put('/:employeeId', (req, res, next) => {
     const { name, position, wage } = req.body.employee;
-    // const isCurrentEmployee = req.body.employee.isCurrentEmployee === 0 ? 0 : 1;
 
     if (!name || !position || !wage) {
-        res.sendStatus(400);
+        return res.sendStatus(400);
     }
 
     db.run(
@@ -83,7 +84,6 @@ employeesRouter.put('/:employeeId', (req, res, next) => {
             $name: name,
             $position: position,
             $wage: wage,
-            // $isCurrentEmployee: isCurrentEmployee,
             $id: req.params.employeeId,
         },
         err => {
